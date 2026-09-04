@@ -1,8 +1,9 @@
 "use client";
 
+import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 
-export default function ApprovedPage() {
+function ApprovedContent() {
   const searchParams = useSearchParams();
   const ok = searchParams.get("ok") !== "false";
   const title = searchParams.get("title") || (ok ? "Approved" : "Something went wrong");
@@ -13,11 +14,19 @@ export default function ApprovedPage() {
       : "That link didn't work. Ask for a fresh one to be sent.");
 
   return (
+    <div style={styles.card}>
+      <h1 style={{ ...styles.h1, color: ok ? "#1d4a3e" : "#a53f3f" }}>{title}</h1>
+      <p style={styles.p}>{message}</p>
+    </div>
+  );
+}
+
+export default function ApprovedPage() {
+  return (
     <main style={styles.page}>
-      <div style={styles.card}>
-        <h1 style={{ ...styles.h1, color: ok ? "#1d4a3e" : "#a53f3f" }}>{title}</h1>
-        <p style={styles.p}>{message}</p>
-      </div>
+      <Suspense fallback={<div style={styles.card} />}>
+        <ApprovedContent />
+      </Suspense>
     </main>
   );
 }
