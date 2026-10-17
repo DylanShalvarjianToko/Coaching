@@ -17,9 +17,11 @@ function hoursLabel(low, high) {
   if (!ok(low) && !ok(high)) return "Estimate pending";
   const lo = ok(low) ? low : high;
   const hi = ok(high) ? high : low;
-  const unit = hi === 1 ? "hour" : "hours";
-  if (lo === hi) return `About ${lo} ${unit} a week (estimate)`;
-  return `About ${lo} to ${hi} hours a week (estimate)`;
+  // Under an hour reads better in minutes ("30 minutes", not "0.5 hours").
+  const amount = (v) => (v < 1 ? `${Math.round(v * 60)} minutes` : v === 1 ? "1 hour" : `${v} hours`);
+  if (lo === hi) return `About ${amount(lo)} a week (estimate)`;
+  if (lo >= 1) return `About ${lo} to ${hi} hours a week (estimate)`;
+  return `About ${amount(lo)} to ${amount(hi)} a week (estimate)`;
 }
 
 function Fact({ label, children }) {
