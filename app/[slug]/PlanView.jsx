@@ -171,12 +171,12 @@ export default function PlanView({ client }) {
             <a className="book-link plan-book" href={bookingUrl} target="_blank" rel="noopener noreferrer">
               Pick a time
             </a>
-            <p className="plan-note">The booking link says 30 minutes, but we&rsquo;ll only need about 15.</p>
+            <p className="plan-note">The booking link says 30 minutes, but we only need about 15.</p>
           </Card>
         )}
       </div>
 
-      <footer className="note">The Toko Project &middot; dylan@thetokoproject.com</footer>
+      <footer className="note">Toko N·AI·TIVE &middot; dylan@thetokoproject.com</footer>
     </div>
   );
 }

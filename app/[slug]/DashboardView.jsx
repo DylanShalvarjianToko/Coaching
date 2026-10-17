@@ -123,7 +123,7 @@ export default function DashboardView({ client }) {
           </div>
           <div className="brand-divider" aria-hidden="true" />
           <div>
-            <p className="eyebrow">Your AI Coaching Program</p>
+            <p className="eyebrow">Your Toko N·AI·TIVE program</p>
             <h1>{client.company || client.name}</h1>
           </div>
         </div>
@@ -201,7 +201,7 @@ export default function DashboardView({ client }) {
         </Card>
       </div>
 
-      <footer className="note">The Toko Project &middot; dylan@thetokoproject.com</footer>
+      <footer className="note">Toko N·AI·TIVE &middot; dylan@thetokoproject.com</footer>
     </div>
   );
 }

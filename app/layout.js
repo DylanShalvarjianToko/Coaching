@@ -1,8 +1,8 @@
 import "./globals.css";
 
 export const metadata = {
-  title: "The Toko Project",
-  description: "AI Coaching by The Toko Project",
+  title: "Toko N·AI·TIVE",
+  description: "Toko N·AI·TIVE, by The Toko Project LLC",
 };
 
 export default function RootLayout({ children }) {

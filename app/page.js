@@ -161,7 +161,7 @@ export default function IntakePage() {
           <Field label="Company">
             <input type="text" value={a.company} onChange={(e) => set("company", e.target.value)} required />
           </Field>
-          <Field label="Who introduced you to The Toko Project?" hint="Optional.">
+          <Field label="Who introduced you to Toko N·AI·TIVE?" hint="Optional.">
             <input type="text" value={a.referredBy} onChange={(e) => set("referredBy", e.target.value)} />
           </Field>
           <Field
@@ -410,7 +410,7 @@ function Field({ label, hint, children }) {
 function Masthead() {
   return (
     <header className="masthead">
-      <p className="eyebrow">The Toko Project &middot; AI Coaching</p>
+      <p className="eyebrow">Toko N·AI·TIVE</p>
       <h1>Before our intro call</h1>
       <p className="sub">
         A few quick questions so our 30 minutes is spent on you, not on facts. About 5 minutes.
@@ -421,5 +421,5 @@ function Masthead() {
 }
 
 function Footer() {
-  return <footer className="note">The Toko Project &middot; dylan@thetokoproject.com</footer>;
+  return <footer className="note">Toko N·AI·TIVE &middot; dylan@thetokoproject.com</footer>;
 }
