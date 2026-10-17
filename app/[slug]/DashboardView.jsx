@@ -18,7 +18,7 @@ function useGlow(ref) {
   }, [ref]);
 }
 
-function Card({ className, delay, children }) {
+export function Card({ className, delay, children }) {
   const ref = useRef(null);
   useGlow(ref);
   return (
@@ -32,7 +32,7 @@ function Card({ className, delay, children }) {
   );
 }
 
-function LogoMark({ candidates, fallbackLabel }) {
+export function LogoMark({ candidates, fallbackLabel }) {
   const [idx, setIdx] = useState(0);
   const src = candidates[idx];
   if (!src) {

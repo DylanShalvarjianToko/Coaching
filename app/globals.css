@@ -718,3 +718,133 @@ footer.note {
     margin: 0 -10px;
   }
 }
+
+/* Phase 1 plan view (p1-14). Same shell and cards as the dashboard; only
+   the grid and a few text styles are new. */
+.plan-bento .plan-profile {
+  grid-column: 1 / span 2;
+  grid-row: 1;
+}
+.plan-bento .plan-opps {
+  grid-column: 1 / span 2;
+  grid-row: 2;
+}
+.plan-bento .plan-sessions {
+  grid-column: 1;
+  grid-row: 3 / span 2;
+}
+.plan-bento .plan-quick {
+  grid-column: 2;
+  grid-row: 3;
+}
+.plan-bento .plan-next {
+  grid-column: 2;
+  grid-row: 4;
+}
+.plan-bento p {
+  margin: 0 0 12px;
+  line-height: 1.6;
+  font-size: 15px;
+}
+.plan-lead {
+  font-size: 17px !important;
+  color: var(--ink);
+}
+.plan-note {
+  color: var(--ink-muted);
+  font-size: 13.5px !important;
+  margin-top: 14px !important;
+}
+.plan-profile-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: 32px;
+}
+.plan-facts {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.plan-fact-value {
+  font-size: 15px;
+  line-height: 1.5;
+}
+.opp-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+.opp {
+  border: 1px solid var(--border-soft);
+  border-radius: 16px;
+  padding: 20px 20px 18px;
+  display: flex;
+  flex-direction: column;
+}
+.opp .kpi-label {
+  margin: 8px 0 4px;
+}
+.opp p {
+  font-size: 14.5px;
+  margin-bottom: 6px;
+}
+.opp-rank {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 26px;
+  line-height: 1;
+  color: var(--accent);
+  margin-bottom: 6px;
+}
+.opp-title {
+  font-family: var(--font-display);
+  font-size: 19px;
+  font-weight: 700;
+  margin: 0 0 6px;
+  line-height: 1.2;
+}
+.opp-foot {
+  margin-top: auto;
+  padding-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.session-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.session {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+.session .step-dot {
+  flex: 0 0 auto;
+}
+.session-focus {
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+.session p {
+  margin: 0;
+  color: var(--ink-muted);
+}
+a.book-link.plan-book {
+  margin-top: 6px;
+  color: var(--on-accent);
+}
+@media (max-width: 720px) {
+  .plan-profile-grid,
+  .opp-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+}
