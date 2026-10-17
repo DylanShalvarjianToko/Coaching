@@ -346,7 +346,7 @@ export default function IntakePage() {
               </label>
             </div>
           </div>
-          <Field label="Email address for your welcome materials">
+          <Field label="Best email to reach you">
             <input
               type="email"
               value={a.confirmationEmail}
