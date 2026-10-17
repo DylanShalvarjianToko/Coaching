@@ -207,8 +207,22 @@ button.submit {
   padding: 13px 22px;
   cursor: pointer;
 }
-button.submit:hover {
+button.submit:hover,
+a.book-link:hover {
   background: var(--accent-ink);
+}
+a.book-link {
+  display: inline-block;
+  margin-top: 22px;
+  font-family: var(--font-label);
+  font-size: 13px;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  background: var(--accent);
+  color: white;
+  border-radius: 9px;
+  padding: 13px 22px;
+  text-decoration: none;
 }
 button.submit:disabled {
   opacity: 0.6;

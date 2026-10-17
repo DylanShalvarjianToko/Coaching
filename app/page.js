@@ -9,6 +9,7 @@ function emptyAnswers() {
     name: "",
     role: "",
     company: "",
+    referredBy: "",
     orgContext: "",
     engagementType: "individual",
     teamMembers: [{ name: "", role: "" }],
@@ -16,14 +17,14 @@ function emptyAnswers() {
     connectors: "",
     aiComfort: 5,
     aiComfortNote: "",
+    weeklyHours: "",
     primaryGoal: "",
     challenges: "",
     stylePref: "",
-    scheduling: "",
     contactChannel: "email",
     priorTraining: "no",
     priorTrainingNote: "",
-    recordingConsent: "yes",
+    recordingConsent: "",
     confirmationEmail: "",
   };
 }
@@ -59,6 +60,7 @@ export default function IntakePage() {
     if (!a.role) missing.push("your role");
     if (!a.company) missing.push("company");
     if (!a.primaryGoal) missing.push("your goal");
+    if (!a.recordingConsent) missing.push("the recording question");
     if (!a.confirmationEmail) missing.push("email address");
     return missing;
   }
@@ -79,22 +81,25 @@ export default function IntakePage() {
       role: a.role,
       company: a.company,
       org_context: a.orgContext,
+      referred_by: a.referredBy,
       engagement_type: teamMembers.length > 0 ? "team" : a.engagementType,
       team_members: teamMembers,
       tool_access: a.toolAccess,
       connectors: a.connectors,
       ai_comfort: Number(a.aiComfort),
       ai_comfort_note: a.aiComfortNote,
+      weekly_hours_on_repetitive_tasks:
+        a.weeklyHours === "" || isNaN(Number(a.weeklyHours)) ? null : Number(a.weeklyHours),
       primary_goal: a.primaryGoal,
       known_challenges: a.challenges,
       style_pref: a.stylePref,
-      scheduling: a.scheduling,
       contact_channel: a.contactChannel,
       prior_training: a.priorTraining === "yes",
       prior_training_note: a.priorTrainingNote,
       recording_consent: a.recordingConsent === "yes",
       confirmation_email: a.confirmationEmail,
       date_intake_completed: new Date().toISOString().slice(0, 10),
+      engagement_status: "lead",
     };
 
     let lastError = null;
@@ -106,7 +111,7 @@ export default function IntakePage() {
         return;
       }
       lastError = insertError;
-      // 23505 = unique_violation (slug collision) -- retry with a fresh suffix.
+      // 23505 = unique_violation (slug collision), retry with a fresh suffix.
       if (insertError.code !== "23505") break;
     }
 
@@ -115,15 +120,25 @@ export default function IntakePage() {
   }
 
   if (status === "done") {
+    const firstName = (a.name || "").trim().split(/\s+/)[0];
+    const bookingUrl =
+      "https://calendly.com/dylan-thetokoproject/30min?name=" +
+      encodeURIComponent(a.name || "") +
+      "&email=" +
+      encodeURIComponent(a.confirmationEmail || "");
     return (
       <div className="page">
         <Masthead />
         <div className="thanks">
-          <h2>You&rsquo;re all set</h2>
+          <h2>Thank you{firstName ? ", " + firstName : ""}</h2>
           <p>
-            Thanks. We&rsquo;re setting up your program now. Watch your inbox: you&rsquo;ll hear
-            from us by email once everything&rsquo;s ready, including your confirmation and your
-            dashboard. Nothing else needed from you in the meantime.
+            Last step: pick a time for our 30-minute intro call. It is all about you and how you
+            work, nothing to prepare.
+          </p>
+          <p>
+            <a className="book-link" href={bookingUrl} target="_blank" rel="noopener noreferrer">
+              Book your intro call
+            </a>
           </p>
         </div>
         <Footer />
@@ -146,9 +161,12 @@ export default function IntakePage() {
           <Field label="Company">
             <input type="text" value={a.company} onChange={(e) => set("company", e.target.value)} required />
           </Field>
+          <Field label="Who introduced you to The Toko Project?" hint="Optional.">
+            <input type="text" value={a.referredBy} onChange={(e) => set("referredBy", e.target.value)} />
+          </Field>
           <Field
             label="A bit about your team / where you sit in the org"
-            hint="Optional -- team size, who you report to, whatever's relevant."
+            hint="Optional. Team size, who you report to, whatever is relevant."
           >
             <textarea value={a.orgContext} onChange={(e) => set("orgContext", e.target.value)} />
           </Field>
@@ -209,13 +227,13 @@ export default function IntakePage() {
           <legend>Your AI today</legend>
           <Field
             label="What AI tools do you currently have access to?"
-            hint="e.g. ChatGPT Plus, Claude, Copilot -- answer to your best ability, doesn't need to be exact."
+            hint="For example ChatGPT Plus, Claude, Copilot. Your best guess is fine, it doesn't need to be exact."
           >
             <textarea value={a.toolAccess} onChange={(e) => set("toolAccess", e.target.value)} />
           </Field>
           <Field
             label="Any connected tools or integrations you know of?"
-            hint="Calendar, email, CRM, Notion, Slack, etc. -- not sure is a fine answer."
+            hint="Calendar, email, CRM, Notion, Slack, and so on. Not sure is a fine answer."
           >
             <textarea value={a.connectors} onChange={(e) => set("connectors", e.target.value)} />
           </Field>
@@ -235,11 +253,25 @@ export default function IntakePage() {
           <Field label="One or two sentences on how you use AI today">
             <textarea value={a.aiComfortNote} onChange={(e) => set("aiComfortNote", e.target.value)} />
           </Field>
+          <Field
+            label="Roughly how many hours a week do you spend on repetitive work like email, documents, reports, scheduling or research?"
+            hint="A rough guess is fine. We use it as your starting point."
+          >
+            <input
+              type="number"
+              min="0"
+              max="80"
+              step="0.5"
+              inputMode="decimal"
+              value={a.weeklyHours}
+              onChange={(e) => set("weeklyHours", e.target.value)}
+            />
+          </Field>
         </fieldset>
 
         <fieldset>
           <legend>Your goals</legend>
-          <Field label="What does success from this coaching look like to you?">
+          <Field label="If this goes well, what is different about your week three months from now?">
             <textarea value={a.primaryGoal} onChange={(e) => set("primaryGoal", e.target.value)} required />
           </Field>
           <Field label="What's already a known challenge or pain point?">
@@ -247,7 +279,7 @@ export default function IntakePage() {
           </Field>
           <Field
             label="How do you like an assistant to communicate with you?"
-            hint="e.g. direct and concise, or walk me through the reasoning."
+            hint="For example direct and concise, or walk me through the reasoning."
           >
             <textarea value={a.stylePref} onChange={(e) => set("stylePref", e.target.value)} />
           </Field>
@@ -255,12 +287,6 @@ export default function IntakePage() {
 
         <fieldset>
           <legend>Logistics</legend>
-          <Field
-            label="Scheduling preference"
-            hint="The default is 5 sessions, about 30-45 minutes each -- let us know if you need something different."
-          >
-            <input type="text" value={a.scheduling} onChange={(e) => set("scheduling", e.target.value)} />
-          </Field>
           <div className="field">
             <label className="q">Preferred contact channel</label>
             <select value={a.contactChannel} onChange={(e) => set("contactChannel", e.target.value)}>
@@ -294,7 +320,13 @@ export default function IntakePage() {
             <textarea value={a.priorTrainingNote} onChange={(e) => set("priorTrainingNote", e.target.value)} />
           </Field>
           <div className="field">
-            <label className="q">Is it OK for sessions to be recorded/transcribed?</label>
+            <label className="q">Is it OK if I record and transcribe our calls?</label>
+            <p className="hint">
+              I use a tool called Granola to transcribe our calls so I can listen to you instead of
+              taking notes. The transcript is used only to build your plan and your program
+              materials. It stays private to me, is never shared, and I will delete it whenever you
+              ask. Saying no is completely fine; I will take notes by hand instead.
+            </p>
             <div className="radio-row">
               <label className="radio-opt">
                 <input
@@ -379,10 +411,10 @@ function Masthead() {
   return (
     <header className="masthead">
       <p className="eyebrow">The Toko Project &middot; AI Coaching</p>
-      <h1>Let&rsquo;s get to know you</h1>
+      <h1>Before our intro call</h1>
       <p className="sub">
-        A few questions before we start working together. This is the only intake
-        you&rsquo;ll need to do. Answer to your best ability; nothing here needs to be perfect.
+        A few quick questions so our 30 minutes is spent on you, not on facts. About 5 minutes.
+        Rough answers are fine.
       </p>
     </header>
   );
