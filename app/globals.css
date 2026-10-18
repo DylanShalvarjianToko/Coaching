@@ -103,6 +103,7 @@ label.q {
 }
 input[type="text"],
 input[type="email"],
+input[type="number"],
 textarea,
 select {
   width: 100%;
@@ -140,6 +141,52 @@ select:focus-visible {
   accent-color: var(--accent);
   width: 16px;
   height: 16px;
+}
+.chip-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-auto-rows: 1fr;
+  gap: 8px;
+}
+.chip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 46px;
+  font-size: 14.5px;
+  line-height: 1.35;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  cursor: pointer;
+  background: var(--surface);
+  user-select: none;
+  transition: border-color .15s, background .15s;
+}
+.chip:hover {
+  border-color: var(--ink-faint);
+}
+.chip input {
+  flex: none;
+  accent-color: var(--accent);
+  width: 16px;
+  height: 16px;
+  margin: 0;
+}
+.chip.on {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+@media (max-width: 560px) {
+  .chip-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+input[type="number"] {
+  max-width: 160px;
+}
+input.chip-other {
+  margin-top: 10px;
 }
 .scale-row {
   display: flex;

@@ -4,6 +4,54 @@ import { useState } from "react";
 import { supabase } from "../lib/supabaseClient";
 import { slugify, randomSuffix } from "../lib/stages";
 
+// Multi-select questions (approved by Dylan 2026-10-18). Each has an
+// "Other" option that opens a text box. Answers are stored as one line of
+// text in the existing columns, so nothing downstream changes.
+const AI_USE_OPTIONS = [
+  "Writing or editing emails",
+  "Summarizing documents or meetings",
+  "Research",
+  "Drafting reports or presentations",
+  "Working with data or spreadsheets",
+  "Brainstorming",
+  "I don't use it yet",
+];
+const GOAL_OPTIONS = [
+  "Less time on email",
+  "Reports and updates take minutes, not hours",
+  "Meetings prepped and followed up for me",
+  "More time for strategy and my team",
+  "An assistant that handles recurring work",
+  "Confident using AI every day",
+];
+const CHALLENGE_OPTIONS = [
+  "Too much email",
+  "Repetitive reports and updates",
+  "Chasing people for information",
+  "Meeting prep and follow-ups",
+  "Not sure which AI tool to use or how",
+  "Company rules on AI",
+  "No time to learn",
+];
+const STYLE_OPTIONS = [
+  "Short and direct",
+  "Give me a recommendation",
+  "Walk me through the reasoning",
+  "Bullet points",
+  "Detailed with context",
+];
+
+function emptyMulti() {
+  return { picked: [], other: false, otherText: "" };
+}
+
+// "Research; Brainstorming; Other: my own words"
+function multiToText(m) {
+  const parts = [...m.picked];
+  if (m.other && m.otherText.trim()) parts.push("Other: " + m.otherText.trim());
+  return parts.join("; ");
+}
+
 function emptyAnswers() {
   return {
     name: "",
@@ -11,16 +59,14 @@ function emptyAnswers() {
     company: "",
     referredBy: "",
     orgContext: "",
-    engagementType: "individual",
-    teamMembers: [{ name: "", role: "" }],
     toolAccess: "",
     connectors: "",
     aiComfort: 5,
-    aiComfortNote: "",
+    aiUse: emptyMulti(),
     weeklyHours: "",
-    primaryGoal: "",
-    challenges: "",
-    stylePref: "",
+    goals: emptyMulti(),
+    challenges: emptyMulti(),
+    style: emptyMulti(),
     contactChannel: "email",
     priorTraining: "no",
     priorTrainingNote: "",
@@ -38,28 +84,12 @@ export default function IntakePage() {
     setA((prev) => ({ ...prev, [field]: value }));
   }
 
-  function setTeamMember(idx, field, value) {
-    setA((prev) => {
-      const teamMembers = prev.teamMembers.slice();
-      teamMembers[idx] = { ...teamMembers[idx], [field]: value };
-      return { ...prev, teamMembers };
-    });
-  }
-
-  function addTeamRow() {
-    setA((prev) => ({ ...prev, teamMembers: [...prev.teamMembers, { name: "", role: "" }] }));
-  }
-
-  function removeTeamRow(idx) {
-    setA((prev) => ({ ...prev, teamMembers: prev.teamMembers.filter((_, i) => i !== idx) }));
-  }
-
   function validate() {
     const missing = [];
     if (!a.name) missing.push("your name");
     if (!a.role) missing.push("your role");
     if (!a.company) missing.push("company");
-    if (!a.primaryGoal) missing.push("your goal");
+    if (!multiToText(a.goals)) missing.push("what would be different in three months");
     if (!a.recordingConsent) missing.push("the recording question");
     if (!a.confirmationEmail) missing.push("email address");
     return missing;
@@ -75,24 +105,23 @@ export default function IntakePage() {
     setError("");
     setStatus("submitting");
 
-    const teamMembers = a.teamMembers.filter((m) => m.name.trim() || m.role.trim());
     const row = {
       name: a.name,
       role: a.role,
       company: a.company,
       org_context: a.orgContext,
       referred_by: a.referredBy,
-      engagement_type: teamMembers.length > 0 ? "team" : a.engagementType,
-      team_members: teamMembers,
+      engagement_type: "individual",
+      team_members: [],
       tool_access: a.toolAccess,
       connectors: a.connectors,
       ai_comfort: Number(a.aiComfort),
-      ai_comfort_note: a.aiComfortNote,
+      ai_comfort_note: multiToText(a.aiUse),
       weekly_hours_on_repetitive_tasks:
         a.weeklyHours === "" || isNaN(Number(a.weeklyHours)) ? null : Number(a.weeklyHours),
-      primary_goal: a.primaryGoal,
-      known_challenges: a.challenges,
-      style_pref: a.stylePref,
+      primary_goal: multiToText(a.goals),
+      known_challenges: multiToText(a.challenges),
+      style_pref: multiToText(a.style),
       contact_channel: a.contactChannel,
       prior_training: a.priorTraining === "yes",
       prior_training_note: a.priorTrainingNote,
@@ -170,57 +199,6 @@ export default function IntakePage() {
           >
             <textarea value={a.orgContext} onChange={(e) => set("orgContext", e.target.value)} />
           </Field>
-          <div className="field">
-            <label className="q">Is this just you, or a team?</label>
-            <div className="radio-row">
-              <label className="radio-opt">
-                <input
-                  type="radio"
-                  checked={a.engagementType === "individual"}
-                  onChange={() => set("engagementType", "individual")}
-                />{" "}
-                Just me
-              </label>
-              <label className="radio-opt">
-                <input
-                  type="radio"
-                  checked={a.engagementType === "team"}
-                  onChange={() => set("engagementType", "team")}
-                />{" "}
-                A team
-              </label>
-            </div>
-          </div>
-          {a.engagementType === "team" && (
-            <div className="field">
-              <label className="q">Who&rsquo;s on the team?</label>
-              <p className="hint">Add each person&rsquo;s name and role.</p>
-              <div className="team-list">
-                {a.teamMembers.map((m, idx) => (
-                  <div className="team-row" key={idx}>
-                    <input
-                      type="text"
-                      placeholder="Name"
-                      value={m.name}
-                      onChange={(e) => setTeamMember(idx, "name", e.target.value)}
-                    />
-                    <input
-                      type="text"
-                      placeholder="Role"
-                      value={m.role}
-                      onChange={(e) => setTeamMember(idx, "role", e.target.value)}
-                    />
-                    <button type="button" className="remove-row" onClick={() => removeTeamRow(idx)}>
-                      Remove
-                    </button>
-                  </div>
-                ))}
-              </div>
-              <button type="button" className="ghost" onClick={addTeamRow}>
-                + Add person
-              </button>
-            </div>
-          )}
         </fieldset>
 
         <fieldset>
@@ -250,9 +228,13 @@ export default function IntakePage() {
               <span className="scale-val">{a.aiComfort}</span>
             </div>
           </div>
-          <Field label="One or two sentences on how you use AI today">
-            <textarea value={a.aiComfortNote} onChange={(e) => set("aiComfortNote", e.target.value)} />
-          </Field>
+          <MultiSelect
+            label="How do you use AI today?"
+            hint="Pick as many as apply."
+            options={AI_USE_OPTIONS}
+            value={a.aiUse}
+            onChange={(v) => set("aiUse", v)}
+          />
           <Field
             label="Roughly how many hours a week do you spend on repetitive work like email, documents, reports, scheduling or research?"
             hint="A rough guess is fine. We use it as your starting point."
@@ -271,18 +253,27 @@ export default function IntakePage() {
 
         <fieldset>
           <legend>Your goals</legend>
-          <Field label="If this goes well, what is different about your week three months from now?">
-            <textarea value={a.primaryGoal} onChange={(e) => set("primaryGoal", e.target.value)} required />
-          </Field>
-          <Field label="What's already a known challenge or pain point?">
-            <textarea value={a.challenges} onChange={(e) => set("challenges", e.target.value)} />
-          </Field>
-          <Field
+          <MultiSelect
+            label="If this goes well, what is different about your week three months from now?"
+            hint="Pick as many as apply."
+            options={GOAL_OPTIONS}
+            value={a.goals}
+            onChange={(v) => set("goals", v)}
+          />
+          <MultiSelect
+            label="What's already a challenge or pain point?"
+            hint="Pick as many as apply."
+            options={CHALLENGE_OPTIONS}
+            value={a.challenges}
+            onChange={(v) => set("challenges", v)}
+          />
+          <MultiSelect
             label="How do you like an assistant to communicate with you?"
-            hint="For example direct and concise, or walk me through the reasoning."
-          >
-            <textarea value={a.stylePref} onChange={(e) => set("stylePref", e.target.value)} />
-          </Field>
+            hint="Pick as many as apply."
+            options={STYLE_OPTIONS}
+            value={a.style}
+            onChange={(v) => set("style", v)}
+          />
         </fieldset>
 
         <fieldset>
@@ -390,11 +381,51 @@ export default function IntakePage() {
 
 function row_preview(a) {
   const flat = { ...a };
-  flat.teamMembers = (a.teamMembers || [])
-    .filter((m) => m.name || m.role)
-    .map((m) => `${m.name} (${m.role})`)
-    .join(", ");
+  flat.aiUse = multiToText(a.aiUse);
+  flat.goals = multiToText(a.goals);
+  flat.challenges = multiToText(a.challenges);
+  flat.style = multiToText(a.style);
   return flat;
+}
+
+function MultiSelect({ label, hint, options, value, onChange }) {
+  function toggle(opt) {
+    const picked = value.picked.includes(opt)
+      ? value.picked.filter((p) => p !== opt)
+      : [...value.picked, opt];
+    onChange({ ...value, picked });
+  }
+  return (
+    <div className="field">
+      <label className="q">{label}</label>
+      {hint && <p className="hint">{hint}</p>}
+      <div className="chip-grid">
+        {options.map((opt) => (
+          <label className={"chip" + (value.picked.includes(opt) ? " on" : "")} key={opt}>
+            <input type="checkbox" checked={value.picked.includes(opt)} onChange={() => toggle(opt)} />
+            {opt}
+          </label>
+        ))}
+        <label className={"chip" + (value.other ? " on" : "")}>
+          <input
+            type="checkbox"
+            checked={value.other}
+            onChange={() => onChange({ ...value, other: !value.other })}
+          />
+          Other
+        </label>
+      </div>
+      {value.other && (
+        <input
+          type="text"
+          className="chip-other"
+          placeholder="In your own words"
+          value={value.otherText}
+          onChange={(e) => onChange({ ...value, otherText: e.target.value })}
+        />
+      )}
+    </div>
+  );
 }
 
 function Field({ label, hint, children }) {
