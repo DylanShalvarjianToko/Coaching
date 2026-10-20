@@ -97,6 +97,7 @@ export default function PlanView({ client }) {
             <h1>{client.company || client.name}</h1>
           </div>
         </div>
+        <div className="topbar-wm"><span className="wm" role="img" aria-label="Toko Native"><span className="wm-t">Toko</span><span className="wm-w">N<span className="ai">·AI·</span>TIVE</span></span></div>
       </div>
 
       <div className="bento plan-bento">
@@ -146,7 +147,7 @@ export default function PlanView({ client }) {
         </Card>
 
         <Card className="plan-sessions" delay={0.14}>
-          <h2>Your plan: four working sessions</h2>
+          <h2>Your plan, in four working sessions</h2>
           <ol className="session-list">
             {sessions.map((s) => (
               <li className="session" key={s.n}>
@@ -178,7 +179,7 @@ export default function PlanView({ client }) {
         )}
       </div>
 
-      <footer className="note">Toko N·AI·TIVE &middot; dylan@thetokoproject.com</footer>
+      <footer className="note"><span className="wm-inline">Toko N<span className="ai">·AI·</span>TIVE</span> &middot; dylan@thetokoproject.com</footer>
     </div>
   );
 }

@@ -37,9 +37,9 @@ const styles = {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    background: "#f1f3f1",
+    background: "#FAFAF7",
     padding: "24px",
-    fontFamily: "'Source Sans 3', -apple-system, sans-serif",
+    fontFamily: "'Geist', -apple-system, sans-serif",
   },
   card: {
     maxWidth: 480,
@@ -52,7 +52,7 @@ const styles = {
     boxShadow: "0 1px 2px rgba(20,24,26,0.04), 0 4px 14px rgba(20,24,26,0.05)",
   },
   h1: {
-    fontFamily: "'Zilla Slab', Georgia, serif",
+    fontFamily: "'Geist', -apple-system, sans-serif",
     fontWeight: 600,
     fontSize: 22,
     margin: "0 0 10px",

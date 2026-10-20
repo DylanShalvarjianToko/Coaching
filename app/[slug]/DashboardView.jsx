@@ -127,6 +127,7 @@ export default function DashboardView({ client }) {
             <h1>{client.company || client.name}</h1>
           </div>
         </div>
+        <div className="topbar-wm"><span className="wm" role="img" aria-label="Toko Native"><span className="wm-t">Toko</span><span className="wm-w">N<span className="ai">·AI·</span>TIVE</span></span></div>
 
         <div className="topbar-controls">
           <Stepper currentStage={client.current_stage || 1} stageLog={client.stage_log} />
@@ -201,7 +202,7 @@ export default function DashboardView({ client }) {
         </Card>
       </div>
 
-      <footer className="note">Toko N·AI·TIVE &middot; dylan@thetokoproject.com</footer>
+      <footer className="note"><span className="wm-inline">Toko N<span className="ai">·AI·</span>TIVE</span> &middot; dylan@thetokoproject.com</footer>
     </div>
   );
 }

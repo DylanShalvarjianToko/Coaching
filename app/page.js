@@ -99,7 +99,7 @@ export default function IntakePage() {
     e.preventDefault();
     const missing = validate();
     if (missing.length) {
-      setError("Please fill in: " + missing.join(", "));
+      setError("Please fill in " + missing.join(", ") + ".");
       return;
     }
     setError("");
@@ -161,7 +161,7 @@ export default function IntakePage() {
         <div className="thanks">
           <h2>Thank you{firstName ? ", " + firstName : ""}</h2>
           <p>
-            Last step: pick a time for our 30-minute intro call. It is all about you and how you
+            One last step. Pick a time for our 30-minute intro call. It is all about you and how you
             work, nothing to prepare.
           </p>
           <p>
@@ -441,7 +441,7 @@ function Field({ label, hint, children }) {
 function Masthead() {
   return (
     <header className="masthead">
-      <p className="eyebrow">Toko N·AI·TIVE</p>
+      <div className="masthead-wm"><span className="wm" role="img" aria-label="Toko Native"><span className="wm-t">Toko</span><span className="wm-w">N<span className="ai">·AI·</span>TIVE</span></span></div>
       <h1>Before our intro call</h1>
       <p className="sub">
         A few quick questions so our 30 minutes is spent on you, not on facts. About 5 minutes.
@@ -452,5 +452,5 @@ function Masthead() {
 }
 
 function Footer() {
-  return <footer className="note">Toko N·AI·TIVE &middot; dylan@thetokoproject.com</footer>;
+  return <footer className="note"><span className="wm-inline">Toko N<span className="ai">·AI·</span>TIVE</span> &middot; dylan@thetokoproject.com</footer>;
 }

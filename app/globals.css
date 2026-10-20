@@ -1,23 +1,27 @@
 :root {
-  --font-display: "Zilla Slab", Georgia, serif;
-  --font-body: "Source Sans 3", -apple-system, "Segoe UI", sans-serif;
-  --font-label: "IBM Plex Mono", monospace;
-  --bg: #f5f4ef;
+  --font-display: "Geist", -apple-system, "Segoe UI", sans-serif;
+  --font-body: "Geist", -apple-system, "Segoe UI", sans-serif;
+  --font-label: "Geist", -apple-system, "Segoe UI", sans-serif;
+  --font-logo: "Bodoni Moda", Didot, Georgia, serif;
+  --forest: #1e4d2b;
+  --forest-2: #173d22;
+  --marigold: #f4b23e;
+  --bg: #fafaf7;
   --surface: #ffffff;
-  --surface-2: #eeece4;
-  --ink: #15171a;
-  --ink-muted: #5d6266;
-  --ink-faint: #94989b;
-  --border: #e6e3da;
+  --surface-2: #f1f2ee;
+  --ink: #141a16;
+  --ink-muted: #56605a;
+  --ink-faint: #848c86;
+  --border: #e3e6e0;
   --border-soft: rgba(21, 23, 26, 0.09);
-  --accent: #2f6f5e;
-  --accent-ink: #1d4a3e;
-  --accent-soft: #e2eeea;
+  --accent: #1e4d2b;
+  --accent-ink: #173d22;
+  --accent-soft: #e2eee5;
   --warn: #a9691f;
   --warn-soft: #f3e7d6;
   --danger: #a53f3f;
   --danger-soft: #f5e2e0;
-  --focus: #2f6f5e;
+  --focus: #1e4d2b;
   --shadow-sm: 0 1px 2px rgba(21, 20, 12, 0.06);
   --shadow: 0 1px 2px rgba(21, 20, 12, 0.05), 0 6px 16px -6px rgba(21, 20, 12, 0.16),
     0 14px 28px -16px rgba(21, 20, 12, 0.14);
@@ -322,18 +326,15 @@ footer.note {
 /* ---- dashboard ---- */
 
 .dash-shell {
-  --font-display: "Cormorant Garamond", Georgia, serif;
-  --font-body: "Jost", -apple-system, "Segoe UI", sans-serif;
-  --font-label: "Jost", -apple-system, "Segoe UI", sans-serif;
-  /* Luxury hospitality brand: this surface never renders in a dark palette,
-     regardless of the visitor's OS theme preference. */
-  --bg: #f5f4ef;
+  /* Toko N·AI·TIVE frame (core 2c): Geist, light only, never follows the OS theme.
+     The client's own accent and logo are set inline by the view. */
+  --bg: #fafaf7;
   --surface: #ffffff;
-  --surface-2: #eeece4;
-  --ink: #15171a;
-  --ink-muted: #5d6266;
-  --ink-faint: #94989b;
-  --border: #e6e3da;
+  --surface-2: #f1f2ee;
+  --ink: #141a16;
+  --ink-muted: #56605a;
+  --ink-faint: #848c86;
+  --border: #e3e6e0;
   --border-soft: rgba(21, 23, 26, 0.09);
   font-family: var(--font-body);
   min-height: 100vh;
@@ -895,3 +896,56 @@ a.book-link.plan-book {
     gap: 16px;
   }
 }
+
+/* ---- Toko N·AI·TIVE brand layer (2026-10-18, core 2c) ---- */
+:root { color-scheme: light; }
+body { -webkit-font-smoothing: antialiased; }
+h1, legend, .card h2, .thanks h2, .opp-title, .opp-rank, .monogram-badge, .step-tooltip strong {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+h1 { letter-spacing: -0.035em; }
+.eyebrow, .kpi-label, .form-status {
+  font-family: var(--font-body);
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-muted);
+}
+.wm { display: inline-block; line-height: 1; color: var(--ink); text-decoration: none; }
+.wm-t { display: block; font-size: 9px; letter-spacing: 0.32em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 4px; }
+.wm-w { font-family: var(--font-logo); font-weight: 500; font-size: 22px; white-space: nowrap; }
+.wm .ai, .wm-inline .ai { color: var(--forest); }
+.wm-inline { font-weight: 600; color: var(--ink-muted); }
+.masthead-wm { margin-bottom: 28px; }
+.topbar-wm { margin-left: auto; }
+@media (max-width: 640px) { .topbar-wm { display: none; } }
+button.submit, a.book-link {
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  border-radius: 999px;
+  padding: 14px 26px;
+  box-shadow: 0 4px 14px rgba(20, 26, 22, 0.14);
+  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s ease, background-color 0.25s ease;
+}
+button.submit:hover:not(:disabled), a.book-link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(20, 26, 22, 0.2);
+}
+button.submit:active, a.book-link:active { transform: scale(0.97); }
+.page button.submit, .page a.book-link { background: var(--forest); }
+.page button.submit:hover, .page a.book-link:hover { background: var(--forest-2); }
+input, select, textarea { transition: border-color 0.2s ease, box-shadow 0.2s ease; }
+input:focus-visible, select:focus-visible, textarea:focus-visible { outline: none; border-color: var(--forest); box-shadow: 0 0 0 4px rgba(30, 77, 43, 0.12); }
+.chip { transition: border-color 0.2s ease, background-color 0.2s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1); }
+.chip:active { transform: scale(0.97); }
+.page .chip.on { border-color: var(--forest); background: #e2eee5; }
+footer.note { font-size: 13.5px; }
+.brand-block .eyebrow { letter-spacing: 0; }
+.status-pill { font-family: var(--font-body); text-transform: none; letter-spacing: 0; font-size: 12.5px; font-weight: 600; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
